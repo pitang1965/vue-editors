@@ -3,18 +3,20 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="container mx-auto p-4">
+    <header class="flex flex-col">
+      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+      <p class="text-lg font-bold place-self-center">エディタ関連コンポーネントの実験</p>
+      <div>
+        <nav class="flex justify-end">
+          <RouterLink class="text-xl font-bold text-slate-400 hover:text-slate-900" to="/">Home</RouterLink>
+          <RouterLink class="text-xl font-bold text-slate-400 hover:text-slate-900" to="/about">About</RouterLink>
+        </nav>
+      </div>
+    </header>
 
-    <div>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+    <RouterView />
+  </div>
 </template>
 
 <style scoped>
