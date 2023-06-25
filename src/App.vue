@@ -10,6 +10,7 @@ import { RouterLink, RouterView } from 'vue-router'
       <div>
         <nav class="flex justify-end">
           <RouterLink class="text-xl font-bold text-slate-400 hover:text-slate-900" to="/">Home</RouterLink>
+          <RouterLink class="text-xl font-bold text-slate-400 hover:text-slate-900" to="/vue-quill">VueQuill</RouterLink>
           <RouterLink class="text-xl font-bold text-slate-400 hover:text-slate-900" to="/about">About</RouterLink>
         </nav>
       </div>

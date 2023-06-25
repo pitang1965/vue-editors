@@ -3,6 +3,6 @@
 
 <template>
   <main>
-    <h1>This is an home page</h1>
+    <h1>各種エディタ関連コンポーネントについての実験です。</h1>
   </main>
 </template>
