@@ -33,7 +33,7 @@ import { onMounted, ref, watch } from 'vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { htmlContent } from './contents/vueQuillContents.js'
-import { copyToClipboard } from '../utils/clipboard.js'
+import { copyToClipboard } from '@/utils/clipboard.js'
 
 const richEditor = ref()
 const textEditor = ref()
