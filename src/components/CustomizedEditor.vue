@@ -61,6 +61,9 @@
       :style="{ color: textColor, backgroundColor, fontFamily, fontSize }"
       @ready="onReady"
       @update:content="onContentChange"
+      @focus="onFocus"
+      @blur="onBlur"
+      @selectionChange="onSelectionChange"
       ref="textEditor"
     />
   </div>
@@ -79,12 +82,14 @@ const initialContent = `Hello world!
 2行目
 3行目`
 
+let quillRef = ref(null)
+
 const numLines = ref(0)
 const textEditor = ref()
 const backgroundColor = ref('#ffffff')
 const textColor = ref('#000000')
-const showLineNumber = ref(false)
-const showHighlight = ref(false)
+const showLineNumber = ref(true)
+const showHighlight = ref(true)
 const fontSans = `ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`
 const fontSerif = `ui-serif, Georgia, Cambria, "Times New Roman", Times, serif`
 const fontFamily = ref(fontSans)
@@ -134,13 +139,14 @@ const onContentChange = (content) => {
   numLines.value = content.split('\n').length - 1
 
   // 行番号の生成（今は表示していなくても生成している）
-  lineNumbers.value = Array.from({length: numLines.value}, (_, i) => i + 1).join('\n')
-
+  lineNumbers.value = Array.from({ length: numLines.value }, (_, i) => i + 1).join('\n')
 }
 
 const onReady = (quill) => {
   // 現在の行数の取得
   const contents = quill.getContents()
+
+  quillRef.value = quill
 
   let totalLines = 0
 
@@ -151,5 +157,48 @@ const onReady = (quill) => {
   }
 
   numLines.value = totalLines
+}
+
+// Quill Editorにフォーカスが入ったときに呼ばれる。フォーカス後にQuill Editor内の別の行などをクリックしても呼ばれない。
+const onFocus = () => {
+  if (!showHighlight.value) return
+
+  // ユーザーの選択範囲を取得 (https://quilljs.com/docs/api/#getselection)
+  const range = quillRef.value.getSelection()
+
+  focusLine(range.index)
+}
+
+const onBlur = () => {
+  if (!showHighlight.value) return
+  unfocusLine()
+}
+
+const onSelectionChange = (range) => {
+  if (!showHighlight.value) return
+  unfocusLine()
+  focusLine(range.range.index)
+}
+
+const focusLine = (rangeIndex) => {
+  // クリックした行に下線を引く
+  let index = rangeIndex
+  const content = quillRef.value.getText()
+  if (content[index] === '\n') {
+    index = 0 <= index - 1 ? index - 1 : index
+  }
+  let beforeNewline = content.lastIndexOf('\n', index)
+  let afterNewline = content.indexOf('\n', index)
+
+  if (beforeNewline === -1) beforeNewline = 0
+  if (afterNewline === -1) afterNewline = content.length
+
+  quillRef.value.formatText(beforeNewline, afterNewline - beforeNewline, 'underline', true)
+}
+
+const unfocusLine = () => {
+  // テキスト全体の下線を解除
+  const length = quillRef.value.getLength()
+  quillRef.value.formatText(0, length, 'underline', false)
 }
 </script>
