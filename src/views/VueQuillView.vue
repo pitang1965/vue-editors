@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold">VueQuill</h1>
+    <h2 class="text-xl font-bold">カスタマイズ可能なエディタ</h2>
+    <p class="text-sm">Ctrl+U（下線）など使えなくしています</p>
+    <CustomizedEditor />
+    <h1 class="text-2xl font-bold mt-4">VueQuill</h1>
     <h2 class="text-xl font-bold mt-4">ツールバー(full)あり</h2>
     <button
       @click="handleClick"
@@ -16,9 +19,6 @@
       ref="richEditor"
       class="border border-solid border-current border-slate-200 mt-1"
     />
-    <h2 class="text-xl font-bold mt-4">カスタマイズ可能なエディタ</h2>
-    <p class="text-sm">Ctrl+U（下線）など使えなくしています</p>
-    <CustomizedEditor />
   </div>
 </template>
 
