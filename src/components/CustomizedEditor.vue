@@ -1,4 +1,5 @@
 <template>
+  <div class="text-sm m-2">行数：{{ numLines }}</div>
   <div class="flex gap-2">
     <button
       @click="changeBackgroundColor"
@@ -25,18 +26,27 @@
     </div>
 
     <button
+      @click="changeFontFamily"
       class="px-2 py-1 bg-slate-200 text-sm text-black hover:bg-slate-400 border-2 border-slate-300 rounded-full"
     >
-      フォント
+      フォントファミリー
+    </button>
+
+    <button
+      @click="changeFontSize"
+      class="px-2 py-1 bg-slate-200 text-sm text-black hover:bg-slate-400 border-2 border-slate-300 rounded-full"
+    >
+      フォントサイズ
     </button>
   </div>
-
   <QuillEditor
     theme=""
     contentType="text"
-    content="Hello world!"
-    class="border border-solid border-current border-slate-200 mt-2]"
-    :style="{ color: textColor, backgroundColor: backgroundColor }"
+    :content="initialContent"
+    class="border border-solid border-current border-slate-200 mt-2"
+    :style="{ color: textColor, backgroundColor, fontFamily, fontSize }"
+    @ready="onReady"
+    @update:content="onContentChange"
     ref="textEditor"
   />
 </template>
@@ -46,11 +56,20 @@ import { onMounted, ref } from 'vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
+const initialContent = `Hello world!
+2行目
+3行目`
+
+const numLines = ref(0)
 const textEditor = ref()
 const backgroundColor = ref('#ffffff')
 const textColor = ref('#000000')
 const showLineNumber = ref(false)
 const showHighlight = ref(false)
+const fontSans = `ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`
+const fontSerif = `ui-serif, Georgia, Cambria, "Times New Roman", Times, serif`
+const fontFamily = ref(fontSans)
+const fontSize = ref('1rem')
 
 onMounted(() => {
   deleteKeybinding(85) // Ctrl+U 又は Cmd+U
@@ -79,5 +98,32 @@ const changeBackgroundColor = () => {
 
 const changeTextColor = () => {
   textColor.value = textColor.value === '#000000' ? '#ff00ff' : '#000000'
+}
+
+const changeFontFamily = () => {
+  fontFamily.value = fontFamily.value === fontSans ? fontSerif : fontSans
+}
+
+const changeFontSize = () => {
+  fontSize.value = fontSize.value === '1rem' ? '1.25rem' : '1rem'
+}
+
+const onContentChange = (content) => {
+  numLines.value = content.split('\n').length - 1
+}
+
+const onReady = (quill) => {
+  const contents = quill.getContents()
+  console.log(contents)
+
+  let totalLines = 0
+
+  for (let op of contents.ops) {
+    if (typeof op.insert === 'string') {
+      totalLines += op.insert.split('\n').length - 1
+    }
+  }
+
+  numLines.value = totalLines
 }
 </script>
