@@ -39,22 +39,41 @@
       フォントサイズ
     </button>
   </div>
-  <QuillEditor
-    theme=""
-    contentType="text"
-    :content="initialContent"
-    class="border border-solid border-current border-slate-200 mt-2"
-    :style="{ color: textColor, backgroundColor, fontFamily, fontSize }"
-    @ready="onReady"
-    @update:content="onContentChange"
-    ref="textEditor"
-  />
+
+  <div class="flex mt-2">
+    <QuillEditor
+      v-if="showLineNumber"
+      theme=""
+      contentType="text"
+      :content="lineNumbers"
+      class="border border-solid border-current border-slate-200"
+      :style="{ color: textColor, backgroundColor, fontFamily, fontSize }"
+      :readOnly="true"
+      @ready="onReady"
+      @update:content="onContentChange"
+      ref="textEditor"
+    />
+    <QuillEditor
+      theme=""
+      contentType="text"
+      :content="initialContent"
+      class="border border-solid border-current border-slate-200"
+      :style="{ color: textColor, backgroundColor, fontFamily, fontSize }"
+      @ready="onReady"
+      @update:content="onContentChange"
+      ref="textEditor"
+    />
+  </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
+const initialLineNumbers = `1
+2
+3`
 
 const initialContent = `Hello world!
 2行目
@@ -70,11 +89,14 @@ const fontSans = `ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "
 const fontSerif = `ui-serif, Georgia, Cambria, "Times New Roman", Times, serif`
 const fontFamily = ref(fontSans)
 const fontSize = ref('1rem')
+const lineNumbers = ref('')
 
 onMounted(() => {
   deleteKeybinding(85) // Ctrl+U 又は Cmd+U
   deleteKeybinding(73) // Ctrl+I 又は Cmd+I
   deleteKeybinding(66) // Ctrl+B 又は Cmd+B
+
+  lineNumbers.value = initialLineNumbers
 })
 
 // Ctrl + keyCode 及び Cmd + keyCodeのキーバインディングの削除
@@ -110,11 +132,15 @@ const changeFontSize = () => {
 
 const onContentChange = (content) => {
   numLines.value = content.split('\n').length - 1
+
+  // 行番号の生成（今は表示していなくても生成している）
+  lineNumbers.value = Array.from({length: numLines.value}, (_, i) => i + 1).join('\n')
+
 }
 
 const onReady = (quill) => {
+  // 現在の行数の取得
   const contents = quill.getContents()
-  console.log(contents)
 
   let totalLines = 0
 
