@@ -1,19 +1,10 @@
 <template>
   <div class="text-sm m-2">行数：{{ numLines }}</div>
   <div class="flex gap-2">
-    <button
-      @click="changeBackgroundColor"
-      class="px-2 py-1 bg-slate-200 text-sm text-black hover:bg-slate-400 border-2 border-slate-300 rounded-full"
-    >
-      背景色
-    </button>
-
-    <button
-      @click="changeTextColor"
-      class="px-2 py-1 bg-slate-200 text-sm text-black hover:bg-slate-400 border-2 border-slate-300 rounded-full"
-    >
-      文字色
-    </button>
+    <label>背景色</label>
+    <n-color-picker size="small" v-model:value="backgroundColor" on-update="backgroundColor" class="w-40" />
+    <label>文字色</label>
+    <n-color-picker size="small" v-model:value="textColor" on-update="textColor" class="w-40" />
 
     <div class="flex items-center gap-2">
       <input type="checkbox" id="cb-show-line-number" v-model="showLineNumber" />
@@ -72,6 +63,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { QuillEditor } from '@vueup/vue-quill'
+import { NColorPicker} from 'naive-ui'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 const initialLineNumbers = `1
@@ -86,8 +78,8 @@ let quillRef = ref(null)
 
 const numLines = ref(0)
 const textEditor = ref()
-const backgroundColor = ref('#ffffff')
-const textColor = ref('#000000')
+const backgroundColor = ref('#F5E3F9FF')
+const textColor = ref('#1F2DC9FF')
 const showLineNumber = ref(true)
 const showHighlight = ref(true)
 const fontSans = `ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`
@@ -117,14 +109,6 @@ const deleteKeybinding = (keyCode) => {
       return false
     }
   })
-}
-
-const changeBackgroundColor = () => {
-  backgroundColor.value = backgroundColor.value === '#ffffff' ? '#50d71e' : '#ffffff'
-}
-
-const changeTextColor = () => {
-  textColor.value = textColor.value === '#000000' ? '#ff00ff' : '#000000'
 }
 
 const changeFontFamily = () => {
