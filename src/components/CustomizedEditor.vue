@@ -111,7 +111,7 @@ const deleteKeybinding = (keyCode) => {
   delete Keyboard.bindings[keyCode]
   Keyboard.addBinding({
     key: keyCode,
-    metaKey: true, // Cmd 又は Ctrlキー
+    shortKey: true, // Cmd 又は Ctrlキー
     handler: () => {
       // 何も実行しない
       return false
